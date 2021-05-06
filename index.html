@@ -1123,6 +1123,7 @@ function yesnoCheck() {
         document.getElementById('pincode-block').style.display = 'none';
         document.getElementById('pincode').required = false;
         document.getElementById('district').required = true;
+        document.getElementById('pincode').value = '';
 
     }
     else{
@@ -1130,6 +1131,7 @@ function yesnoCheck() {
         document.getElementById('pincode-block').style.display = 'block';
         document.getElementById('pincode').required = true;
         document.getElementById('district').required = false;
+        document.getElementById('district').value = '';
 
     }
 
