@@ -1237,6 +1237,7 @@ function urlBase64ToUint8Array(base64String) {
   
 
 async function triggerPushNotification() {
+  try{
   if ('serviceWorker' in navigator) {
         // Registering Service Worker
       const register = await navigator.serviceWorker.register('./sw.js', {
@@ -1254,7 +1255,10 @@ async function triggerPushNotification() {
       console.error('Service workers are not supported in this browser');
       return {};
     }
-    
+  }catch(err){
+    console.log(err);
+    return {};
+  }
 }
 
     // Attach a submit handler to the form
