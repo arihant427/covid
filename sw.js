@@ -5,7 +5,7 @@ self.addEventListener('push', event => {
     self.registration.showNotification(data.title, {
       body: data.response,
       icon:"assets/img/logo6.png",
-      vibrate: [100, 50, 100],
+      vibrate: [2000, 500, 1000],
     });
   });
 
