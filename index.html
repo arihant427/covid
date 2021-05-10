@@ -18,6 +18,7 @@
   gtag('js', new Date());
 
   gtag('config', 'G-8PRG3LWD3J');
+
 </script>
 
   <!-- Favicons -->
@@ -81,6 +82,7 @@
    <!-- ======= Contact Section ======= -->
    <section id="contact" class="contact" >
 
+
     <div class="container" data-aos="fade-up">
       <div class="row gy-4">
         <div class="col-lg-6 hero-img" data-aos="zoom-out" data-aos-delay="200">
@@ -95,6 +97,7 @@
           <form id = "searchForm" class="php-email-form">
             <div class="row gy-4">
 
+           
 
               <div class="col-md-12 ">
               <input type="radio" onclick="javascript:yesnoCheck();"  id="district-radio" name="radio" value="male">
@@ -105,7 +108,7 @@
               <div class="col-md-12 " id="pincode-block">
                 <input type="numeric" onkeypress="return onlyNumberKey(event)" minlength="6" maxlength="6" size="6" class="form-control" id= "pincode" name="pincode" placeholder="Pincode">
               </div>
-
+          
               <div class="col-md-12 " id ="district-block">
                 <select name="district" id="district" class="form-control">
                   <option value="">&ndash; District &ndash;</option>
@@ -883,9 +886,14 @@
               <div class="col-md-12 text-center">
                
 
-                <button type="submit">Notify Me When Slot Available</button>
+                <button id="submit-notification" type="submit">Notify Me When Slot Available</button>
+              
               </div>
-
+              <div class="d-flex justify-content-center"  >
+                <div class="spinner-border"  role="status" id="loading-top" style="color:#4154f1;">
+                   <!-- <span class="sr-only" id="loading"></span>-->
+                </div>
+            </div>
             </div>
           </form>
 
@@ -1187,6 +1195,7 @@
   <script src="assets/js/main.js"></script>
  
   <script>
+        document.getElementById('loading-top').style.display = 'none';
         function selectDistrict() {
 
           document.getElementById('district-radio').checked = true;
@@ -1263,6 +1272,8 @@ async function triggerPushNotification() {
 
     // Attach a submit handler to the form
     $( "#searchForm" ).submit(async function( event ) { 
+      document.getElementById("loading-top").style.display = "block";
+      document.getElementById('submit-notification').disabled = true;
       // Stop form from submitting normally
       event.preventDefault();
 
@@ -1289,6 +1300,8 @@ async function triggerPushNotification() {
           alert("Error occoured, Try Again.")
         }
         document.getElementById("searchForm").reset();
+        document.getElementById('loading-top').style.display = 'none';
+      document.getElementById('submit-notification').disabled = false;
         selectDistrict();
       });
       posting.fail(function( data ) {
