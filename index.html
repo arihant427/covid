@@ -1193,8 +1193,112 @@
 
   
   <script src="assets/js/main.js"></script>
- 
-  <script>
+
+
+<script>
+  var os = [
+    { name: 'Windows Phone', value: 'Windows Phone', version: 'OS' },
+    { name: 'Windows', value: 'Win', version: 'NT' },
+    { name: 'iPhone', value: 'iPhone', version: 'OS' },
+    { name: 'iPad', value: 'iPad', version: 'OS' },
+    { name: 'Kindle', value: 'Silk', version: 'Silk' },
+    { name: 'Android', value: 'Android', version: 'Android' },
+    { name: 'PlayBook', value: 'PlayBook', version: 'OS' },
+    { name: 'BlackBerry', value: 'BlackBerry', version: '/' },
+    { name: 'Macintosh', value: 'Mac', version: 'OS X' },
+    { name: 'Linux', value: 'Linux', version: 'rv' },
+    { name: 'Palm', value: 'Palm', version: 'PalmOS' }
+]
+var browser = [
+    { name: 'Chrome', value: 'Chrome', version: 'Chrome' },
+    { name: 'Firefox', value: 'Firefox', version: 'Firefox' },
+    { name: 'Safari', value: 'Safari', version: 'Version' },
+    { name: 'Internet Explorer', value: 'MSIE', version: 'MSIE' },
+    { name: 'Opera', value: 'Opera', version: 'Opera' },
+    { name: 'BlackBerry', value: 'CLDC', version: 'CLDC' },
+    { name: 'Mozilla', value: 'Mozilla', version: 'Mozilla' }
+]
+
+function matchItem(string, data) {
+    var i = 0,
+        j = 0,
+        html = '',
+        regex,
+        regexv,
+        match,
+        matches,
+        version;
+    
+    for (i = 0; i < data.length; i += 1) {
+        regex = new RegExp(data[i].value, 'i');
+        match = regex.test(string);
+        if (match) {
+            regexv = new RegExp(data[i].version + '[- /:;]([\d._]+)', 'i');
+            matches = string.match(regexv);
+            version = '';
+            if (matches) { if (matches[1]) { matches = matches[1]; } }
+            if (matches) {
+                matches = matches.split(/[._]+/);
+                for (j = 0; j < matches.length; j += 1) {
+                    if (j === 0) {
+                        version += matches[j] + '.';
+                    } else {
+                        version += matches[j];
+                    }
+                }
+            } else {
+                version = '0';
+            }
+            return {
+                name: data[i].name,
+                version: parseFloat(version)
+            };
+        }
+    }
+    return { name: 'unknown', version: 0 };
+
+   
+}
+  const getDeviceInfo = () =>{
+    var header = [
+    navigator.platform,
+    navigator.userAgent,
+    navigator.appVersion,
+    navigator.vendor,
+    window.opera
+];
+var os = [
+    { name: 'Windows Phone', value: 'Windows Phone', version: 'OS' },
+    { name: 'Windows', value: 'Win', version: 'NT' },
+    { name: 'iPhone', value: 'iPhone', version: 'OS' },
+    { name: 'iPad', value: 'iPad', version: 'OS' },
+    { name: 'Kindle', value: 'Silk', version: 'Silk' },
+    { name: 'Android', value: 'Android', version: 'Android' },
+    { name: 'PlayBook', value: 'PlayBook', version: 'OS' },
+    { name: 'BlackBerry', value: 'BlackBerry', version: '/' },
+    { name: 'Macintosh', value: 'Mac', version: 'OS X' },
+    { name: 'Linux', value: 'Linux', version: 'rv' },
+    { name: 'Palm', value: 'Palm', version: 'PalmOS' }
+]
+var browser = [
+    { name: 'Chrome', value: 'Chrome', version: 'Chrome' },
+    { name: 'Firefox', value: 'Firefox', version: 'Firefox' },
+    { name: 'Safari', value: 'Safari', version: 'Version' },
+    { name: 'Internet Explorer', value: 'MSIE', version: 'MSIE' },
+    { name: 'Opera', value: 'Opera', version: 'Opera' },
+    { name: 'BlackBerry', value: 'CLDC', version: 'CLDC' },
+    { name: 'Mozilla', value: 'Mozilla', version: 'Mozilla' }
+]
+    var agent = header.join(' ');
+    var os = matchItem(agent, os);
+    var browser = matchItem(agent, browser);
+    return {os:os,browser:browser};
+}
+
+</script>
+
+  <script language="javascript">
+
         document.getElementById('loading-top').style.display = 'none';
         function selectDistrict() {
 
@@ -1252,7 +1356,6 @@ async function triggerPushNotification() {
       const register = await navigator.serviceWorker.register('./sw.js', {
         scope: '/'
       }).catch((err) => { return console.log('[Service Worker] Registration Error:', err) })
-      console.log('[Service Worker] Registered. Scope')
       await navigator.serviceWorker.ready; // Here's the waiting
     await navigator.serviceWorker.ready; // Here's the waiting
       var subscriptionData = await register.pushManager.subscribe({
@@ -1276,8 +1379,12 @@ async function triggerPushNotification() {
       document.getElementById('submit-notification').disabled = true;
       // Stop form from submitting normally
       event.preventDefault();
-
-
+      var deviceInfo = {};
+      try{
+     deviceInfo = getDeviceInfo();
+      }catch(err){
+        console.log(err);
+      }
 //var subscriptionData = {};
 
     
@@ -1290,7 +1397,7 @@ async function triggerPushNotification() {
         district = $("#district :selected").val(),
         url = "https://www.luggagerooms.com/covid/add";
       // Send the data using post
-      var posting = $.post( url, { subscriptionData:JSON.stringify(subscriptionData), name: name,mobileNumber:mobileNumber,pincode:pincode,districtId:district } );
+      var posting = $.post( url, { deviceInfo:JSON.stringify(deviceInfo),subscriptionData:JSON.stringify(subscriptionData), name: name,mobileNumber:mobileNumber,pincode:pincode,districtId:district } );
      
       // Put the results in a div
       posting.done(function( data ) {
@@ -1347,7 +1454,81 @@ posting.fail(function( data ) {
 });
 });
 </script>
-    
+
+<!--
+<meta name="google-signin-client_id" content="628457940769-un2csfvlffn4ne87ad22brs3bro616a0.apps.googleusercontent.com">
+
+<script src="https://apis.google.com/js/client:plusone.js" type="application/javascript"></script>
+<script>
+
+const ua = navigator.userAgent;
+console.log("UA: "+ua)
+
+  function signOut() {
+    var auth2 = gapi.auth2.getAuthInstance();
+    auth2.signOut().then(function () {
+      console.log('User signed out.');
+    });
+  }
+
+  async function  onLoad() {
+    gapi.load('auth2', async function() {
+      await gapi.auth2.init();
+      console.log(gapi.auth2.getAuthInstance().isSignedIn.get())
+      if ( gapi.auth2.isSignedIn.get()) {
+  var profile =  gapi.auth2.currentUser.get().getBasicProfile();
+  console.log('ID: ' + profile.getId());
+  console.log('Full Name: ' + profile.getName());
+  console.log('Given Name: ' + profile.getGivenName());
+  console.log('Family Name: ' + profile.getFamilyName());
+  console.log('Image URL: ' + profile.getImageUrl());
+  console.log('Email: ' + profile.getEmail());
+}
+    });
+  }
+</script>
+<script src="https://apis.google.com/js/platform.js?onload=onLoad" async defer></script>
+
+<script>
+ // console.log(gapi)
+//  auth2 = gapi.auth2.init();
+
+/*gapi.client.init({
+        apiKey: "AIzaSyBGLREf6NKMTsj0HW9OZHwYP-jRiItYFvI",
+        clientId: "628457940769-un2csfvlffn4ne87ad22brs3bro616a0.apps.googleusercontent.com",
+        discoveryDocs: DISCOVERY_DOCS,
+        scope: SCOPES
+      }).
+
+  //gapi.load('client:auth2', initClient)
+
+if (auth2.isSignedIn.get()) {
+  var profile = auth2.currentUser.get().getBasicProfile();
+  console.log('ID: ' + profile.getId());
+  console.log('Full Name: ' + profile.getName());
+  console.log('Given Name: ' + profile.getGivenName());
+  console.log('Family Name: ' + profile.getFamilyName());
+  console.log('Image URL: ' + profile.getImageUrl());
+  console.log('Email: ' + profile.getEmail());
+}
+*/
+
+/*gapi.client.setApiKey("AIzaSyBGLREf6NKMTsj0HW9OZHwYP-jRiItYFvI");
+       gapi.auth.authorize({
+         client_id: "628457940769-un2csfvlffn4ne87ad22brs3bro616a0.apps.googleusercontent.com",
+         scope: SCOPES,
+         immediate: false
+       }, function(authResult) {
+            if (authResult && !authResult.error) {
+              window.alert('Auth was successful!');
+            } else {
+              window.alert('Auth was not successful');
+            }
+          }
+       );*/
+
+</script>
+-->
 
 </body>
 
