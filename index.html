@@ -1305,7 +1305,10 @@ async function triggerPushNotification() {
         selectDistrict();
       });
       posting.fail(function( data ) {
-        
+        document.getElementById("searchForm").reset();
+        document.getElementById('loading-top').style.display = 'none';
+      document.getElementById('submit-notification').disabled = false;
+      selectDistrict();
           alert("Error occoured, Try Again.")
         
       });
