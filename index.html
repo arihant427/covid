@@ -880,6 +880,11 @@
                 <input type="numeric" pattern="^[6789]\d{9}$" title="Enter Valid 10 digit mobile number" onkeypress="return onlyNumberKey(event)" minlength="10" maxlength="10" size="10" class="form-control" name="mobileNumber" placeholder="Mobile Number" required>
               </div>
 
+              
+              <div class="col-md-12">
+                <input type="email" title="Enter Valid Email"  minlength="7"  class="form-control" name="email" placeholder="Email (optional)">
+              </div>
+
               <div class="col-md-12">
               </div>
 
@@ -1488,11 +1493,12 @@ async function triggerPushNotification() {
       var $form = $( this ),
         name = $form.find( "input[name='name']" ).val(),
         mobileNumber = $form.find( "input[name='mobileNumber']" ).val(),
+        email = $form.find( "input[name='email']" ).val(),
         pincode = $form.find( "input[name='pincode']" ).val(),
         district = $("#district :selected").val(),
         url = "https://www.luggagerooms.com/covid/add";
       // Send the data using post
-      var posting = $.post( url, { deviceInfo:JSON.stringify(deviceInfo),subscriptionData:JSON.stringify(subscriptionData), name: name,mobileNumber:mobileNumber,pincode:pincode,districtId:district } );
+      var posting = $.post( url, { email:email, deviceInfo:JSON.stringify(deviceInfo),subscriptionData:JSON.stringify(subscriptionData), name: name,mobileNumber:mobileNumber,pincode:pincode,districtId:district } );
      
       // Put the results in a div
       posting.done(function( data ) {
