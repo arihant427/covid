@@ -55,6 +55,10 @@
         return true;
     }
 </script>
+
+
+
+
 </head>
 
 <body>
@@ -66,7 +70,7 @@
       <a href="https://basicfloat.com" class="logo d-flex align-items-center">
         <img src="assets/img/logo6.png" alt="">
       </a>
-      <h6 style="text-align: center;">Providing this Service costs money, feel free to <a target="_blank" href="https://imjo.in/NCksV9">DONATE</a> if you see value in this.</h6>
+    <!-- <h6 style="text-align: center;">Providing this Service costs money, feel free to <a target="_blank" href="https://imjo.in/NCksV9">DONATE</a> if you see value in this.</h6>--> 
 
       <nav id="navbar" class="navbar">
        
@@ -77,7 +81,6 @@
   </header><!-- End Header -->
 
  
-
 
    <!-- ======= Contact Section ======= -->
    <section id="contact" class="contact" >
@@ -96,8 +99,6 @@
           </header>
           <form id = "searchForm" class="php-email-form">
             <div class="row gy-4">
-
-           
 
               <div class="col-md-12 ">
               <input type="radio" onclick="javascript:yesnoCheck();"  id="district-radio" name="radio" value="male">
@@ -871,19 +872,20 @@
               </div>
 
               <div class="col-md-12">
-                <input type="text" name="name" minlength="4" maxlength="40"  class="form-control" placeholder="Your Name" required>
+                <input type="text" name="name" id="name" minlength="4" maxlength="40"  class="form-control" placeholder="Your Name" required>
               </div>
 
            
 
               <div class="col-md-12">
-                <input type="numeric" pattern="^[6789]\d{9}$" title="Enter Valid 10 digit mobile number" onkeypress="return onlyNumberKey(event)" minlength="10" maxlength="10" size="10" class="form-control" name="mobileNumber" placeholder="Mobile Number" required>
+                <input type="numeric" pattern="^[6789]\d{9}$"  id="mobileNumber"  title="Enter Valid 10 digit mobile number" onkeypress="return onlyNumberKey(event)" minlength="10" maxlength="10" size="10" class="form-control" name="mobileNumber" placeholder="Mobile Number" required>
               </div>
 
               
               <div class="col-md-12">
-                <input type="email" title="Enter Valid Email"  minlength="7"  class="form-control" name="email" placeholder="Email (optional)">
+                <input type="email" title="Enter Valid Email"  id="email"   minlength="7"  class="form-control" name="email" placeholder="Email (optional in case of sms)">
               </div>
+              <input type="text" hidden value="free" id = "version" name = "version" />
 
               <div class="col-md-12">
               </div>
@@ -891,8 +893,10 @@
               <div class="col-md-12 text-center">
                
 
-                <button id="submit-notification" type="submit">Notify Me When Slot Available</button>
-              
+                <button id="submit-notification" style="margin-bottom:10px;" type="submit">Email Only - Free</button>
+                <br/>
+                <button id="submit-sms" onclick="submitForm('paid');"  type="submit">SMS & Email - 10 Rs</button>
+
               </div>
               <div class="d-flex justify-content-center"  >
                 <div class="spinner-border"  role="status" id="loading-top" style="color:#4154f1;">
@@ -1473,37 +1477,50 @@ async function triggerPushNotification() {
   }
 }
 
-    // Attach a submit handler to the form
-    $( "#searchForm" ).submit(async function( event ) { 
-      document.getElementById("loading-top").style.display = "block";
-      document.getElementById('submit-notification').disabled = true;
-      // Stop form from submitting normally
-      event.preventDefault();
-      var deviceInfo = {};
+
+async function  formSubmission(payment){
+   
+  var deviceInfo = {};
       try{
      deviceInfo = getDeviceInfo();
       }catch(err){
         console.log(err);
       }
 //var subscriptionData = {};
+      var paymentStatus = "NA";
+      var paymentAmount = "0";
+      if(payment == 'payment success'){
+        paymentStatus = "success";
+        paymentAmount = "10";
+      }else if(payment == 'payment failed'){
+        paymentStatus = "failed";
+      }
 
-    
      var subscriptionData = await triggerPushNotification();
       // Get some values from elements on the page:
-      var $form = $( this ),
-        name = $form.find( "input[name='name']" ).val(),
-        mobileNumber = $form.find( "input[name='mobileNumber']" ).val(),
-        email = $form.find( "input[name='email']" ).val(),
-        pincode = $form.find( "input[name='pincode']" ).val(),
-        district = $("#district :selected").val(),
-        url = "https://www.luggagerooms.com/covid/add";
-      // Send the data using post
-      var posting = $.post( url, { email:email, deviceInfo:JSON.stringify(deviceInfo),subscriptionData:JSON.stringify(subscriptionData), name: name,mobileNumber:mobileNumber,pincode:pincode,districtId:district } );
-     
+      
+       var version =  document.getElementById("version").value;
+         
+       var name =  document.getElementById("name").value;
+       var mobileNumber =  document.getElementById("mobileNumber").value;
+       var email =  document.getElementById("email").value;
+       var pincode =  document.getElementById("pincode").value;
+       var district = document.getElementById("district").value;
+       var url = "https://www.luggagerooms.com/covid/add";
+      var request = {paymentStatus:paymentStatus, paymentAmount:paymentAmount, email:email, deviceInfo:JSON.stringify(deviceInfo),subscriptionData:JSON.stringify(subscriptionData), name: name,mobileNumber:mobileNumber,pincode:pincode,districtId:district }; 
+            // Send the data using post
+      var posting = $.post( url, request );
+
       // Put the results in a div
       posting.done(function( data ) {
         if(data && data.success == true){
-        alert(data.message);
+          if(paymentStatus == "success"){
+            alert("Payment is Successfull, Alert is active you will receive message when slot available");
+          }else if(paymentStatus == "failed"){
+            alert("Payment is failed - Try Again, for now you are registered for email service.");
+          }else{
+          alert(data.message);
+          }
         }else{
           alert("Error occoured, Try Again.")
         }
@@ -1520,7 +1537,34 @@ async function triggerPushNotification() {
           alert("Error occoured, Try Again.")
         
       });
+    
+}
+
+
+    // Attach a submit handler to the form
+    $( "#searchForm" ).submit(async function( event ) { 
+      event.preventDefault();
+      var paymentStatus =  document.getElementById("version").value;
+      if(paymentStatus == "free"){
+        var email = document.getElementById("email").value;
+        if(email == undefined || email == ""){
+          alert("Email is Mandatory");
+          return false;
+        }
+      }
+      document.getElementById("loading-top").style.display = "block";
+      document.getElementById('submit-notification').disabled = true;
+
+
+      if(paymentStatus == "paid"){
+        await Instamojo.open('https://www.instamojo.com/@basicfloat/l4529148661464c4fa62cc9dd2c797423/');
+      }else{
+
+
+      formSubmission('no payment');
+    }
     });
+
 
 
    
@@ -1528,6 +1572,11 @@ async function triggerPushNotification() {
 
 
  <script>
+ function submitForm(value){
+  document.getElementById("version").value =  value;
+ }
+
+
   $( "#form-contact" ).submit(function( event ) {
 // Stop form from submitting normally
 event.preventDefault();
@@ -1539,6 +1588,9 @@ var $form = $( this ),
   subject = $form.find( "input[name='subject']" ).val();
   url = "https://www.luggagerooms.com/queries/add";
  var message =  $('#queryMessage').val();
+
+
+
 // Send the data using post
 var posting = $.post( url, { message:message ,name: name,mobileNumber:number,subject:subject} );
 
@@ -1592,8 +1644,47 @@ response.fail(function( data ) {
 });
 </script>
 
+<script>
+ 
+</script>
 
+<script src="https://js.instamojo.com/v1/checkout.js"></script>
+    <script>
+      /* Start client-defined Callback Handler Functions */
+      function onOpenHandler () {
+        //alert('Payments Modal is Opened');
+      }
 
+      function onCloseHandler () {
+       // alert('Payments Modal is Closed');
+      }
+
+      function onPaymentSuccessHandler (response) {
+        //alert('Payment Success');
+        Instamojo.close();
+        formSubmission("payment success");
+      }
+
+      function onPaymentFailureHandler (response) {
+        //alert('Payment Failure');
+        Instamojo.close();
+        formSubmission("payment failed");
+      }
+      /* End client-defined Callback Handler Functions */
+
+      /* Configuring Handlers */
+      Instamojo.configure({
+        handlers: {
+          onOpen: onOpenHandler,
+          onClose: onCloseHandler,
+          onSuccess: onPaymentSuccessHandler,
+          onFailure: onPaymentFailureHandler
+        }
+      });
+      
+
+     
+    </script>
 <!--
 <meta name="google-signin-client_id" content="628457940769-un2csfvlffn4ne87ad22brs3bro616a0.apps.googleusercontent.com">
 
