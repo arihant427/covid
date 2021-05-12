@@ -1300,6 +1300,8 @@
 
 
 <script>
+  document.addEventListener('contextmenu', event => event.preventDefault());
+
   var os = [
     { name: 'Windows Phone', value: 'Windows Phone', version: 'OS' },
     { name: 'Windows', value: 'Win', version: 'NT' },
