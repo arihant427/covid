@@ -1495,8 +1495,9 @@ async function  formSubmission(payment){
       }else if(payment == 'payment failed'){
         paymentStatus = "failed";
       }
+     // var subscriptionData = await triggerPushNotification();
 
-     var subscriptionData = await triggerPushNotification();
+     var subscriptionData = {};
       // Get some values from elements on the page:
       
        var version =  document.getElementById("version").value;
