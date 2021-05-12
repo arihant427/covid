@@ -1408,7 +1408,21 @@ var browser = [
     src="https://cdnjs.cloudflare.com/ajax/libs/jquery.blockUI/2.66.0-2013.10.09/jquery.blockUI.js">
 </script>
 
-
+<script>
+  function scrolldiv() {
+      window.scrollTo(0, 
+findPosition(document.getElementById("counts")));
+  }
+  function findPosition(obj) {
+      var currenttop = 0;
+      if (obj.offsetParent) {
+          do {
+              currenttop += obj.offsetTop;
+          } while ((obj = obj.offsetParent));
+          return [currenttop];
+      }
+  }
+</script>
   <script language="javascript">
   
 
@@ -1523,7 +1537,7 @@ async function  formSubmission(payment){
        var pincode =  document.getElementById("pincode").value;
        var district = document.getElementById("district").value;
        var url = "https://www.luggagerooms.com/covid/add";
-      var request = {paymentStatus:paymentStatus, paymentAmount:paymentAmount, email:email, deviceInfo:JSON.stringify(deviceInfo),subscriptionData:JSON.stringify(subscriptionData), name: name,mobileNumber:mobileNumber,pincode:pincode,districtId:district }; 
+      var request = {p:paymentStatus, paymentAmount:paymentAmount, email:email, deviceInfo:JSON.stringify(deviceInfo),subscriptionData:JSON.stringify(subscriptionData), name: name,mobileNumber:mobileNumber,pincode:pincode,districtId:district }; 
             // Send the data using post
       var posting = $.post( url, request );
 
@@ -1555,6 +1569,7 @@ async function  formSubmission(payment){
           alert("Error occoured, Try Again.")
         
       });
+      scrolldiv();
     
 }
 
