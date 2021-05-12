@@ -1461,7 +1461,6 @@ async function triggerPushNotification() {
         scope: '/'
       }).catch((err) => { return console.log('[Service Worker] Registration Error:', err) })
       await navigator.serviceWorker.ready; // Here's the waiting
-    await navigator.serviceWorker.ready; // Here's the waiting
       var subscriptionData = await register.pushManager.subscribe({
         userVisibleOnly: true,
         applicationServerKey: urlBase64ToUint8Array(publicVapidKey),
@@ -1495,9 +1494,8 @@ async function  formSubmission(payment){
       }else if(payment == 'payment failed'){
         paymentStatus = "failed";
       }
-     // var subscriptionData = await triggerPushNotification();
 
-     var subscriptionData = {};
+     var subscriptionData = await triggerPushNotification();
       // Get some values from elements on the page:
       
        var version =  document.getElementById("version").value;
