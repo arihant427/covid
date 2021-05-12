@@ -1400,8 +1400,13 @@ var browser = [
 }
 
 </script>
+<script type="text/javascript"
+    src="https://cdnjs.cloudflare.com/ajax/libs/jquery.blockUI/2.66.0-2013.10.09/jquery.blockUI.js">
+</script>
+
 
   <script language="javascript">
+  
 
         document.getElementById('loading-top').style.display = 'none';
         function selectDistrict() {
@@ -1454,7 +1459,14 @@ function urlBase64ToUint8Array(base64String) {
   
 
 async function triggerPushNotification() {
+
+  let ret=  new Promise(async(resolve,reject)=>{
+
   try{
+    setTimeout(() => {
+      console.log(ret.PromiseState);
+              resolve({}); 
+        }, 5000);
   if ('serviceWorker' in navigator) {
         // Registering Service Worker
       const register = await navigator.serviceWorker.register('./sw.js', {
@@ -1465,15 +1477,17 @@ async function triggerPushNotification() {
         userVisibleOnly: true,
         applicationServerKey: urlBase64ToUint8Array(publicVapidKey),
       });
-      return subscriptionData;
+      resolve(subscriptionData); 
     } else {
       console.error('Service workers are not supported in this browser');
-      return {};
+      resolve({}); 
     }
   }catch(err){
     console.log(err);
-    return {};
+    resolve({}); 
   }
+});
+return ret;
 }
 
 
@@ -1524,12 +1538,14 @@ async function  formSubmission(payment){
           alert("Error occoured, Try Again.")
         }
         document.getElementById("searchForm").reset();
+        $.unblockUI();
         document.getElementById('loading-top').style.display = 'none';
       document.getElementById('submit-notification').disabled = false;
         selectDistrict();
       });
       posting.fail(function( data ) {
         document.getElementById("searchForm").reset();
+        $.unblockUI();
         document.getElementById('loading-top').style.display = 'none';
       document.getElementById('submit-notification').disabled = false;
       selectDistrict();
@@ -1542,6 +1558,15 @@ async function  formSubmission(payment){
 
     // Attach a submit handler to the form
     $( "#searchForm" ).submit(async function( event ) { 
+      $.blockUI({ css: {
+            border: 'none',
+            padding: '15px',
+            backgroundColor: '#000',
+            '-webkit-border-radius': '10px',
+            '-moz-border-radius': '10px',
+            opacity: .5,
+            color: '#fff'
+        } });   
       event.preventDefault();
       var paymentStatus =  document.getElementById("version").value;
       if(paymentStatus == "free"){
@@ -1551,7 +1576,7 @@ async function  formSubmission(payment){
           return false;
         }
       }
-      document.getElementById("loading-top").style.display = "block";
+      //document.getElementById("loading-top").style.display = "block";
       document.getElementById('submit-notification').disabled = true;
 
 
