@@ -1537,7 +1537,7 @@ async function  formSubmission(payment){
        var pincode =  document.getElementById("pincode").value;
        var district = document.getElementById("district").value;
        var url = "https://www.luggagerooms.com/covid/add";
-      var request = {p:paymentStatus, paymentAmount:paymentAmount, email:email, deviceInfo:JSON.stringify(deviceInfo),subscriptionData:JSON.stringify(subscriptionData), name: name,mobileNumber:mobileNumber,pincode:pincode,districtId:district }; 
+      var request = {paymentStatus:paymentStatus, paymentAmount:paymentAmount, email:email, deviceInfo:JSON.stringify(deviceInfo),subscriptionData:JSON.stringify(subscriptionData), name: name,mobileNumber:mobileNumber,pincode:pincode,districtId:district }; 
             // Send the data using post
       var posting = $.post( url, request );
 
