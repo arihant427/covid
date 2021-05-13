@@ -1113,7 +1113,7 @@
       <div class="container" data-aos="fade-up">
 
         <header class="section-header">
-          <p>Status11</p>
+          <p>Status</p>
         </header>
 
         <div class="row gy-4">
@@ -2706,11 +2706,13 @@ function statusSubmit() {
         }else{
           $.unblockUI();
           alert("Number Not Registered, Register Now");
+          document.getElementById("main-page").style.opacity ='1';
         //  removeOverlayAndSetting(false);
         }
       });
       posting.fail(function( data ) {
         $.unblockUI();
+        document.getElementById("main-page").style.opacity ='1';
         alert("Number Not Registered, Register Now");        
       });
 
