@@ -1507,6 +1507,19 @@ async function triggerPushNotification() {
 return ret;
 }
 
+function removeOverlayAndSetting(isReset){
+  if(isReset){
+  document.getElementById("searchForm").reset();
+  scrolldiv();
+  selectDistrict();
+  }
+        $.unblockUI();
+        document.getElementById('loading-top').style.display = 'none';
+        document.getElementById('submit-notification').disabled = false;
+        document.getElementById('submit-sms').disabled = false;
+       
+        
+}
 
 async function  formSubmission(payment){
    
@@ -1517,15 +1530,7 @@ async function  formSubmission(payment){
         console.log(err);
       }
 //var subscriptionData = {};
-      var paymentStatus = "NA";
-      var paymentAmount = "0";
-      if(payment == 'payment success'){
-        paymentStatus = "success";
-        paymentAmount = "10";
-      }else if(payment == 'payment failed'){
-        paymentStatus = "failed";
-      }
-
+  
      var subscriptionData = await triggerPushNotification();
       // Get some values from elements on the page:
       
@@ -1537,39 +1542,30 @@ async function  formSubmission(payment){
        var pincode =  document.getElementById("pincode").value;
        var district = document.getElementById("district").value;
        var url = "https://www.luggagerooms.com/covid/add";
-      var request = {paymentStatus:paymentStatus, paymentAmount:paymentAmount, email:email, deviceInfo:JSON.stringify(deviceInfo),subscriptionData:JSON.stringify(subscriptionData), name: name,mobileNumber:mobileNumber,pincode:pincode,districtId:district }; 
+      var request = {paymentAmount:0,paymentStatus:'NA',isProcess:payment,email:email, deviceInfo:JSON.stringify(deviceInfo),subscriptionData:JSON.stringify(subscriptionData), name: name,mobileNumber:mobileNumber,pincode:pincode,districtId:district }; 
             // Send the data using post
       var posting = $.post( url, request );
 
       // Put the results in a div
-      posting.done(function( data ) {
+      await posting.done(async function( data ) {
         if(data && data.success == true){
-          if(paymentStatus == "success"){
-            alert("Payment is Successfull, Alert is active you will receive message when slot available");
-          }else if(paymentStatus == "failed"){
-            alert("Payment is failed - Try Again, for now you are registered for email service.");
+          if(payment){
+              await Instamojo.open('https://www.instamojo.com/@basicfloat/l4529148661464c4fa62cc9dd2c797423/');
           }else{
           alert(data.message);
+          removeOverlayAndSetting(true);
           }
         }else{
           alert("Error occoured, Try Again.")
+          removeOverlayAndSetting(false);
         }
-        document.getElementById("searchForm").reset();
-        $.unblockUI();
-        document.getElementById('loading-top').style.display = 'none';
-      document.getElementById('submit-notification').disabled = false;
-        selectDistrict();
-      });
-      posting.fail(function( data ) {
-        document.getElementById("searchForm").reset();
-        $.unblockUI();
-        document.getElementById('loading-top').style.display = 'none';
-      document.getElementById('submit-notification').disabled = false;
-      selectDistrict();
-          alert("Error occoured, Try Again.")
         
       });
-      scrolldiv();
+      posting.fail(function( data ) {
+        removeOverlayAndSetting(false);
+          alert("Error occoured, Try Again.222")
+        
+      });
     
 }
 
@@ -1591,20 +1587,18 @@ async function  formSubmission(payment){
         var email = document.getElementById("email").value;
         if(email == undefined || email == ""){
           alert("Email is Mandatory");
+          removeOverlayAndSetting(false);
           return false;
         }
       }
       //document.getElementById("loading-top").style.display = "block";
       document.getElementById('submit-notification').disabled = true;
-
-
+      document.getElementById('submit-sms').disabled = true;
       if(paymentStatus == "paid"){
-        await Instamojo.open('https://www.instamojo.com/@basicfloat/l4529148661464c4fa62cc9dd2c797423/');
+        formSubmission(true);
       }else{
-
-
-      formSubmission('no payment');
-    }
+        formSubmission(false);
+      }
     });
 
 
@@ -1687,7 +1681,28 @@ response.fail(function( data ) {
 </script>
 
 <script>
- 
+ async function sendPaymentUpdate(){
+       var mobileNumber =  document.getElementById("mobileNumber").value;
+       var url = "https://www.luggagerooms.com/covid/q";
+      var request = {mobileNumber:mobileNumber}; 
+            // Send the data using post
+      var posting = $.post( url, request );
+      // Put the results in a div
+      posting.done(async function( data ) {
+        if(data && data.success == true){  
+          alert(data.message);
+          removeOverlayAndSetting(true);
+        }else{
+          alert("Error occoured, Try Again.")
+          removeOverlayAndSetting(false);
+        }
+      });
+      posting.fail(function( data ) {
+         removeOverlayAndSetting(false);
+          alert("Error occoured, Try Again.")
+        
+      });
+ }
 </script>
 
 <script src="https://js.instamojo.com/v1/checkout.js"></script>
@@ -1700,17 +1715,15 @@ response.fail(function( data ) {
       function onCloseHandler () {
        // alert('Payments Modal is Closed');
       }
-
-      function onPaymentSuccessHandler (response) {
-        //alert('Payment Success');
+      async function onPaymentSuccessHandler(){
         Instamojo.close();
-        formSubmission("payment success");
+        await sendPaymentUpdate();
+        removeOverlayAndSetting(true);
       }
-
-      function onPaymentFailureHandler (response) {
-        //alert('Payment Failure');
+       function onPaymentFailureHandler (response) {
         Instamojo.close();
-        formSubmission("payment failed");
+        alert('Payment Failed, Please Try Again');
+        removeOverlayAndSetting(false);
       }
       /* End client-defined Callback Handler Functions */
 
