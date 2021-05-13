@@ -1868,8 +1868,9 @@ if (auth2.isSignedIn.get()) {
           <li id="status-pincode"><i class="icofont-rounded-right"></i></li>
           <li id="status-status"><i class="icofont-rounded-right"></i> </li>
           <li id="status-sent"><i class="icofont-rounded-right"></i> </li>
+          <li id="notification-type"><i class="icofont-rounded-right"></i> </li>
           <li id="status-active"><i class="icofont-rounded-right"></i> </li>
-
+          
         </ul>
       </div>
 
@@ -2665,10 +2666,16 @@ function statusSubmit() {
      // Put the results in a div
       posting.done(async function( data ) {
         var email = data.data.email;
-        var emailView,status = "",active;
+        var emailView,status = "",active,notificationType = "Email";
         emailView = (email == undefined || email == '' || email == 'NULL') ? 'NA' : email;
          var pincode = data.data.pincode && data.data.pincode !== '' ? data.data.pincode : json[data.data.districtId];
-          if(data.data.msgSent > 0 && data.data.paymentStatus !== 'success')
+         if(data.data.paymentStatus == 'success') {
+           notificationType = "SMS + Email";
+         }
+         if(data.data.paymentAmount == 1 && data.data.paymentStatus !== 'success'){
+          notificationType = "SMS (1 Time Only)";
+         }
+         if(data.data.msgSent > 0 && data.data.paymentStatus !== 'success')
           {
             status = 'Message Already Sent';
           } else if(data.data.msgSent > 0 && data.data.paymentStatus == 'success'){
@@ -2687,6 +2694,7 @@ function statusSubmit() {
           document.getElementById("status-pincode" ).innerHTML =   " <strong>Location: </strong>  " +pincode;
           document.getElementById("status-status" ).innerHTML =  " <strong>Status: </strong> " +status;
           document.getElementById("status-sent" ).innerHTML = " <strong>Msg Sent: </strong> " +data.data.msgSent + " Time";
+          document.getElementById("notification-type" ).innerHTML ="<strong>Notification Type: </strong> " +notificationType;
           document.getElementById("status-active" ).innerHTML ="<strong>Notification Active: </strong> " +active;
 
           
