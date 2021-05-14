@@ -920,10 +920,24 @@
   
 
 
+  <div style="text-align: center;" id="wpac-rating"></div>
+    <script type="text/javascript">
+    wpac_init = window.wpac_init || [];
+    wpac_init.push({widget: 'Rating', id: 30539});
+    (function() {
+        if ('WIDGETPACK_LOADED' in window) return;
+        WIDGETPACK_LOADED = true;
+        var mc = document.createElement('script');
+        mc.type = 'text/javascript';
+        mc.async = true;
+        mc.src = 'https://embed.widgetpack.com/widget.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(mc, s.nextSibling);
+    })();
+    </script>
 
   <br/>
   <br/>
-  <h4 style="text-align: center;">NOTE: Your data won't be shared or sold to anyone. Don't worry</h4>
+  <h4 id="NOTE" style="text-align: center;">NOTE: Your data won't be shared or sold to anyone. Don't worry</h4>
 
   <br/>
   <br/>
@@ -1306,8 +1320,7 @@
   <!-- ======= Footer ======= -->
   <footer id="footer" class="footer">
  
-
-
+  
 
     <div class="container">
       <div class="copyright">
@@ -1461,7 +1474,7 @@ var browser = [
 <script>
   function scrolldiv() {
       window.scrollTo(0, 
-findPosition(document.getElementById("counts")));
+findPosition(document.getElementById("wpac-rating")));
   }
   function findPosition(obj) {
       var currenttop = 0;
