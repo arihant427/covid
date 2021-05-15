@@ -1288,12 +1288,15 @@
             <form id="form-contact" class="php-email-form">
               <div class="row gy-4">
 
-                <div class="col-md-6">
+                <div class="col-md-12">
                   <input type="text" name="name" minlength="4" maxlength="30" class="form-control" required placeholder="Your Name" required>
                 </div>
 
                 <div class="col-md-6">
                   <input type="text" class="form-control"   pattern="^[6789]\d{9}$" title="Enter Valid 10 digit mobile number" onkeypress="return onlyNumberKey(event)"  minlength="10" maxlength="10" size="10" name="number" required placeholder="Mobile Number" required>
+                </div>
+                <div class="col-md-6">
+                  <input type="email" title="Enter Valid Email"  id="email"   minlength="7"  class="form-control" name="email" placeholder="Email" required>
                 </div>
 
                 <div class="col-md-12">
@@ -1687,13 +1690,14 @@ var $form = $( this ),
   name = $form.find( "input[name='name']" ).val(),
   number = $form.find( "input[name='number']" ).val(),
   subject = $form.find( "input[name='subject']" ).val();
+  email = $form.find( "input[name='email']" ).val();
   url = "https://www.luggagerooms.com/queries/add";
  var message =  $('#queryMessage').val();
 
 
 
 // Send the data using post
-var posting = $.post( url, { message:message ,name: name,mobileNumber:number,subject:subject} );
+var posting = $.post( url, {email:email ,message:message ,name: name,mobileNumber:number,subject:subject} );
 
 // Put the results in a div
 posting.done(function( data ) {
