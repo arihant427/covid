@@ -2705,15 +2705,22 @@ function statusSubmit() {
          if(data.data.paymentAmount == 1 && data.data.paymentStatus !== 'success'){
           notificationType = "SMS (1 Time Only)";
          }
+         active = data.data.isActive  ? 'Yes' : 'No';
          if(data.data.msgSent > 0 && data.data.paymentStatus !== 'success')
           {
             status = 'Message Already Sent';
           } else if(data.data.msgSent > 0 && data.data.paymentStatus == 'success'){
+            if(data.data.msgSent < 6){
             status = 'Will Send More Message';
+            active = 'Yes';
+            }
+            else{
+            status = '5 Message Already Sent';
+            active = 'No';
+            }
           }else{
             status = 'Will Send Message';
           }
-          active = data.data.isActive  ? 'Yes' : 'No';
         
 
 
