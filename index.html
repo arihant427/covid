@@ -896,9 +896,9 @@
               <div class="col-md-12 text-center">
                
 
-                <button id="submit-notification" style="margin-bottom:10px;" type="submit">Email Only - Free</button>
+                <button id="submit-notification" style="margin-bottom:10px;" type="submit">Notified Me When Slot Available</button>
                 <br/>
-                <button id="submit-sms" onclick="submitForm('paid');"  type="submit">SMS & Email - 10 Rs</button>
+              <!-- <button id="submit-sms" onclick="submitForm('paid');"  type="submit">SMS & Email - 10 Rs</button>--> 
 
               </div>
               <div class="d-flex justify-content-center"  >
@@ -1596,7 +1596,7 @@ async function  formSubmission(payment){
        var pincode =  document.getElementById("pincode").value;
        var district = document.getElementById("district").value;
        var url = "https://www.luggagerooms.com/covid/add";
-      var request = {paymentAmount:0,paymentStatus:'NA',isProcess:payment,email:email, deviceInfo:JSON.stringify(deviceInfo),subscriptionData:JSON.stringify(subscriptionData), name: name,mobileNumber:mobileNumber,pincode:pincode,districtId:district }; 
+      var request = {paymentAmount:1,paymentStatus:'NA',isProcess:payment,email:email, deviceInfo:JSON.stringify(deviceInfo),subscriptionData:JSON.stringify(subscriptionData), name: name,mobileNumber:mobileNumber,pincode:pincode,districtId:district }; 
             // Send the data using post
       var posting = $.post( url, request );
 
