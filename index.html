@@ -2685,23 +2685,23 @@ function statusSubmit() {
         var emailView,status = "",active,notificationType = "Email";
         emailView = (email == undefined || email == '' || email == 'NULL') ? 'NA' : email;
          var pincode = data.data.pincode && data.data.pincode !== '' ? data.data.pincode : json[data.data.districtId];
-         if(data.data.paymentStatus == 'success') {
+         if(data.data.paymentStatus == 'success' || data.data.paymentStatus == 'refund') {
            notificationType = "SMS + Email";
          }
-         if(data.data.paymentAmount == 1 && data.data.paymentStatus !== 'success'){
+         if(data.data.paymentAmount < 10){
           notificationType = "SMS (1 Time Only)";
          }
          active = data.data.isActive  ? 'Yes' : 'No';
-         if(data.data.msgSent > 0 && data.data.paymentStatus !== 'success')
+         if(data.data.msgSent > 0 && data.data.paymentAmount < 10)
           {
             status = 'Message Already Sent';
-          } else if(data.data.msgSent > 0 && data.data.paymentStatus == 'success'){
-            if(data.data.msgSent < 6){
+          } else if(data.data.msgSent > 0 && data.data.paymentAmount > 9){
+            if(data.data.msgSent < 11){
             status = 'Will Send More Message';
             active = 'Yes';
             }
             else{
-            status = '5 Message Already Sent';
+            status = '10 Message Already Sent';
             active = 'No';
             }
           }else{
